@@ -10,9 +10,3 @@ locals {
     bronze = "bronze/"
   }
 }
-
-
-
-
-
-

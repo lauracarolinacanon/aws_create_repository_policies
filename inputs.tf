@@ -1,15 +1,4 @@
-#s3 variables
-
-# One map keyed by env; each value holds org/domain/region
-variable "definition_s3_buckets" {
-  description = "Per-environment S3 definitions"
-  type = map(object({
-    org    : string
-    domain : string
-    region : string
-  }))
-}
-
+#variables globally of the modeule 
 
 variable "region" {
     type = string
@@ -17,6 +6,21 @@ variable "region" {
     default = "us-east-1"
   
 }
+
+
+variable "ctx" {
+  type = object({
+    org    = string
+    domain = string
+    env    = string
+    region = string
+  })
+}
+
+
+
+#variables globally of the modeule 
+
 
 variable "env" {
     type = string
@@ -28,3 +32,19 @@ variable "env" {
     }
   
 }
+
+
+variable "org"    {
+     description = "name of the organization"
+     type = string
+     }  
+
+variable "domain" { 
+    description = "name of the organization"
+    type = string
+     }    
+
+
+
+
+   

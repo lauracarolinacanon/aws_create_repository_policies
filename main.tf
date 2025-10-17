@@ -1,3 +1,14 @@
+module "iam" {
+  source = "./modules/iam_role"
+  org    = var.ctx.org
+  domain = var.ctx.domain
+  env    = var.ctx.env
+  region = var.ctx.region
+  # pass the single object
+}
+
+
+
 module "s3_bucket" {
   source = "./modules/s3_bucket"
   org    = var.ctx.org
@@ -6,6 +17,10 @@ module "s3_bucket" {
   region = var.ctx.region
   # pass the single object
 }
+
+
+
+
 
 
 # so we re gonna create everything in the apply and the destroy everything at the same time 

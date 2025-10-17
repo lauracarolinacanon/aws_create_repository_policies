@@ -9,6 +9,8 @@ resource "aws_s3_bucket" "data_lake" {
 }
 
 # Create folders for the three layers
+
+
 resource "aws_s3_object" "layers" {
   for_each = local.prefix_layers
   bucket   = aws_s3_bucket.data_lake.id
