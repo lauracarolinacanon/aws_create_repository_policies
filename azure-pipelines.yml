@@ -2,7 +2,8 @@ trigger:
   - azure-pipelines        # or 'none' if you want to run manually
 
 pool:
-  name: 'Default'    # <-- your self-hosted pool name
+  vmImage: 'ubuntu-latest'
+   # <-- your self-hosted pool name
   # remove vmImage when using self-hosted
 
 variables:
