@@ -1,9 +1,9 @@
 trigger:
-  - azure-pipelines
-  
+  - azure-pipelines        # or 'none' if you want to run manually
 
 pool:
-  vmImage: 'default'
+  name: 'Default'    # <-- your self-hosted pool name
+  # remove vmImage when using self-hosted
 
 variables:
   aws.rolecredential.maxduration: '3600'
@@ -11,9 +11,8 @@ variables:
 steps:
   - task: AWSCLI@1
     displayName: 'running aws-cli get-caller-identity'
-    # continueOnError: true # If you need the pipeline to succeed
     inputs:
       awsCredentials: 'aws_role'
       regionName: 'us-east-1'
       awsCommand: 'sts'
-      awssubcommand: 'get-caller-identity'
+      awsSubCommand: 'get-caller-identity'
