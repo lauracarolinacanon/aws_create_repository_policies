@@ -1,24 +1,18 @@
-# Starter pipeline
-- task: AWSShellScript@1
-  inputs:
-    awsCredentials: 'aws'
-    regionName: 'us-east-1'
-    scriptType: 'filePath'
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
+
+variables:
+  aws.rolecredential.maxduration: '3600'
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: AWSCLI@1
+    displayName: 'running aws-cli get-caller-identity'
+    # continueOnError: true # If you need the pipeline to succeed
+    inputs:
+      awsCredentials: 'aws_role'
+      regionName: 'aws-region-name'
+      awsCommand: 'sts'
+      awssubcommand: 'get-caller-identity'
