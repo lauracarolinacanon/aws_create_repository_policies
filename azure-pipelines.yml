@@ -7,7 +7,7 @@ pool:
   # remove vmImage when using self-hosted
 
 variables:
-  aws.rolecredential.maxduration: '3600'
+  aws.rolecredential.maxduration: '1700'
 
 steps:
   - task: AWSCLI@1
