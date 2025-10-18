@@ -14,6 +14,6 @@ steps:
     # continueOnError: true # If you need the pipeline to succeed
     inputs:
       awsCredentials: 'aws_role'
-      regionName: 'aws-region-name'
+      regionName: 'us-east-1'
       awsCommand: 'sts'
       awssubcommand: 'get-caller-identity'
