@@ -1,19 +1,80 @@
+# azure-pipelines.yml — dev only, backend LOCAL, region fija us-east-2
 trigger:
-  - azure-pipelines        # or 'none' if you want to run manually
+  - azure-pipelines   # o 'none' si quieres manual
 
 pool:
   vmImage: 'ubuntu-latest'
-   # <-- your self-hosted pool name
-  # remove vmImage when using self-hosted
+
+parameters:
+  - name: do_apply
+    type: boolean
+    default: false
 
 variables:
-  aws.rolecredential.maxduration: '3600'
+  TF_VERSION: '1.7.5'
+  TF_WORKING_DIR: '.'
+  TFVARS_PATH: 'env/dev/dev.tfvars'
+  AWS_SC: 'aws_role'
+  AWS_REGION: 'us-east-2'   # <-- ÚNICA región en todo el pipeline
 
 steps:
+  # 1) Identidad AWS (opcional, útil para debug)
   - task: AWSCLI@1
-    displayName: 'running aws-cli get-caller-identity'
+    displayName: 'STS get-caller-identity'
     inputs:
-      awsCredentials: 'aws_role'
-      regionName: 'us-east-1'
+      awsCredentials: '$(AWS_SC)'
+      regionName: '$(AWS_REGION)'
       awsCommand: 'sts'
       awsSubCommand: 'get-caller-identity'
+
+  # 2) Instalar Terraform
+  - task: TerraformInstaller@1
+    displayName: 'Install Terraform $(TF_VERSION)'
+    inputs:
+      terraformVersion: '$(TF_VERSION)'
+
+  # 3) terraform init (backend LOCAL)
+  - script: |
+      set -e
+      cd "$(TF_WORKING_DIR)"
+      terraform init -input=false
+    displayName: 'Terraform init (local)'
+
+  # 4) validate
+  - script: |
+      set -e
+      cd "$(TF_WORKING_DIR)"
+      terraform validate
+    displayName: 'Terraform validate'
+
+  # 5) plan (usa tu único var-file env/dev/dev.tfvars)
+  - task: AWSCLI@1
+    displayName: 'Terraform plan (dev)'
+    inputs:
+      awsCredentials: '$(AWS_SC)'
+      regionName: '$(AWS_REGION)'
+      awsCommand: 'bash'
+      awsSubCommand: '-lc'
+      awsArguments: |
+        set -e
+        cd "$(TF_WORKING_DIR)"
+        export AWS_DEFAULT_REGION="$(AWS_REGION)"
+        terraform plan \
+          -var-file="$(TFVARS_PATH)" \
+          -out="tfplan-dev.bin" \
+          -input=false
+
+  # 6) apply (opcional)
+  - ${{ if eq(parameters.do_apply, true) }}:
+    - task: AWSCLI@1
+      displayName: 'Terraform apply (dev)'
+      inputs:
+        awsCredentials: '$(AWS_SC)'
+        regionName: '$(AWS_REGION)'
+        awsCommand: 'bash'
+        awsSubCommand: '-lc'
+        awsArguments: |
+          set -e
+          cd "$(TF_WORKING_DIR)"
+          export AWS_DEFAULT_REGION="$(AWS_REGION)"
+          terraform apply -input=false "tfplan-dev.bin"
