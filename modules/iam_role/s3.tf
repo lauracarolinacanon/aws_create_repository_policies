@@ -19,14 +19,14 @@ resource "aws_s3_object" "layers" {
 resource "aws_s3_bucket_server_side_encryption_configuration" "encryptions3" {
   bucket = aws_s3_bucket.data_lake.id
 
-   depends_on = [
-    aws_kms_key_policy.s3_cmk  # aseguras que la policy de la CMK esté antes
-  ]
+  #  depends_on = [
+  #   aws_kms_key_policy.s3_cmk  # aseguras que la policy de la CMK esté antes
+  # ]
 
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm     = "aws:kms"
-      kms_master_key_id = aws_kms_alias.s3_cmk_alias.arn  
+      kms_master_key_id = aws_kms_key.s3_cmk.id
     }
     bucket_key_enabled = true
   }

@@ -3,7 +3,7 @@
 variable "region" {
     type = string
     description = "the region where im gona create my resources"
-    default = "us-east-1"
+    default = "us-east-2"
   
 }
 
