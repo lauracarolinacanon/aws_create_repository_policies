@@ -10,8 +10,6 @@ variable "region" {
 
 
 
-
-
 #variables globally of the modeule 
 
 

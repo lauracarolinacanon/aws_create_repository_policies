@@ -5,9 +5,3 @@ env = "dev"
 org= "Testingbank"
 domain= "Finance"
 
-ctx = {
-  org    = "Testingbank"
-  domain = "Finance"
-  env    = "dev"
-  region = "us-east-2"
-}
