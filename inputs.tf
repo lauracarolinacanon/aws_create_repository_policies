@@ -8,14 +8,7 @@ variable "region" {
 }
 
 
-variable "ctx" {
-  type = object({
-    org    = string
-    domain = string
-    env    = string
-    region = string
-  })
-}
+
 
 
 
